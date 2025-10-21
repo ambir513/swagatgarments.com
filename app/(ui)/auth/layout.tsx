@@ -1,3 +1,4 @@
+import { Logo } from "@/components/utils/logo";
 import { LoginForm } from "@/features/auth/components/login-form";
 import { GalleryVerticalEnd } from "lucide-react";
 import Image from "next/image";
@@ -16,12 +17,7 @@ export default function AuthLayout({
         <div className="flex justify-center gap-2 md:justify-start">
           <a href="#" className="flex items-center gap-2 font-medium">
             <div className="bg-primary text-primary-foreground flex rounded-full  items-center justify-center overflow-hidden">
-              <Image
-                src={"/logo.jpg"}
-                width={55}
-                height={55}
-                alt="Swagat Garments"
-              />
+              <Logo theme="dark" />
             </div>
             Swagat Garments.
           </a>
