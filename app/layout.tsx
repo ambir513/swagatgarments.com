@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 //@ts-ignore
 import "./globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import SearchProviderWrapper from "@/components/utils/search-provider-wrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <body
         className={`${geistSans.className} ${geistMono.variable} antialiased`}
       >
@@ -35,7 +37,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <SearchProviderWrapper>{children}</SearchProviderWrapper>
         </ThemeProvider>
       </body>
     </html>
