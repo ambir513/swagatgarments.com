@@ -29,6 +29,7 @@ import { Login, SignUp } from "../actions";
 import toast from "react-hot-toast";
 import { createAuthClient } from "better-auth/client";
 import { Eye, EyeOff, Mail } from "lucide-react";
+import { useRouter } from "next/navigation";
 const authClient = createAuthClient();
 
 export function LoginForm({
@@ -36,6 +37,8 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"form">) {
   const [showPassword, setShowPassword] = useState(false);
+  const Route = useRouter();
+
   const [isLoading, setIsLoading] = useState<{
     event: string;
     status: boolean;
@@ -55,7 +58,7 @@ export function LoginForm({
     try {
       const response = await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/dashboard",
+        callbackURL: "/",
       });
 
       setIsLoading({ event: "", status: false });
@@ -84,7 +87,8 @@ export function LoginForm({
 
     if (response.status) {
       toast.success(response.message);
-    } else {
+      Route.push("/");
+    } else {  
       toast.error(response.message);
     }
   }
@@ -126,7 +130,14 @@ export function LoginForm({
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <div className="flex justify-between">
+                  <FormLabel>Password</FormLabel>
+                  <Link href={"/auth/forgot-password"}>
+                    <p className="text-sm text-muted-foreground hover:text-primary active:text-primary">
+                      Forgot password
+                    </p>
+                  </Link>
+                </div>
                 <FormControl>
                   <div className="relative">
                     <Input

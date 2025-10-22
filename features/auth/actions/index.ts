@@ -1,8 +1,14 @@
 "use server";
+
 import z from "zod";
-import { SignupSchema, LoginSchema } from "../index";
+import {
+  SignupSchema,
+  LoginSchema,
+  forgotPassSchema,
+  resetPassSchema,
+} from "../index";
+
 import { auth } from "@/lib/auth";
-import { signOut } from "@/lib/auth-client";
 
 export async function SignUp(data: z.infer<typeof SignupSchema>) {
   try {
@@ -33,6 +39,23 @@ export async function Login(data: z.infer<typeof LoginSchema>) {
       },
     });
     return { status: true, message: "Logged In successfully" };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: false,
+      message: error instanceof Error ? error.message : "Something went wrong",
+    };
+  }
+}
+
+export async function resetPass(data: z.infer<typeof resetPassSchema>) {
+  try {
+    await auth.api.resetPassword({
+      body: {
+        ...data,
+      },
+    });
+    return { status: true, message: "Password reset successfully" };
   } catch (error) {
     console.log(error);
     return {

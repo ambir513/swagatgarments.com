@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -29,10 +28,12 @@ import { SignUp } from "../actions";
 import toast from "react-hot-toast";
 import { createAuthClient } from "better-auth/client";
 import { Eye, EyeOff, Mail } from "lucide-react";
+import MailDailog from "./mail-dailog";
 const authClient = createAuthClient();
 
 export function RegisterForm({ className }: { className?: string }) {
   const [showPassword, setShowPassword] = useState(false);
+  const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState<{
     event: string;
     status: boolean;
@@ -53,7 +54,7 @@ export function RegisterForm({ className }: { className?: string }) {
     try {
       const response = await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/dashboard",
+        callbackURL: "/",
       });
 
       setIsLoading({ event: "", status: false });
@@ -82,115 +83,127 @@ export function RegisterForm({ className }: { className?: string }) {
 
     if (response.status) {
       toast.success(response.message);
+      setOpen(true);
     } else {
       toast.error(response.message);
     }
   }
 
   return (
-    <div className={cn("flex flex-col gap-6", className)}>
-      <div className="flex flex-col items-center gap-1 text-center">
-        <h1 className="text-2xl font-bold">Create your account</h1>
-        <p className="text-muted-foreground text-sm text-balance">
-          Fill in the form below to create your account
-        </p>
-      </div>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Full name</FormLabel>
-                <FormControl>
-                  <Input placeholder="John Doe" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <Mail className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      className="bg-background pl-9"
-                      id="email-input"
-                      placeholder="you@gmail.com"
-                      type="email"
-                      {...field}
-                    />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <div className="">
-                    <Input
-                      className="bg-background"
-                      id="password-toggle"
-                      placeholder="Enter your password"
-                      type={showPassword ? "text" : "password"}
-                      {...field}
-                    />
-                    <div
-                      className="absolute top-0 right-0 h-full px-3 hover:bg-transparent"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4 text-muted-foreground" />
-                      ) : (
-                        <Eye className="h-4 w-4 text-muted-foreground" />
-                      )}
+    <>
+      <div className={cn("flex-col gap-6", open ? "hidden" : "flex")}>
+        <div className="flex flex-col items-center gap-1 text-center">
+          <h1 className="text-2xl font-bold">Create your account</h1>
+          <p className="text-muted-foreground text-sm text-balance">
+            Fill in the form below to create your account
+          </p>
+        </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Full name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="John Doe" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Mail className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        className="bg-background pl-9"
+                        id="email-input"
+                        placeholder="you@gmail.com"
+                        type="email"
+                        {...field}
+                      />
                     </div>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button
-            type="submit"
-            className="w-full text-white"
-            disabled={isLoading?.status}
-          >
-            {isLoading?.event == "Signup" && <Spinner />}
-            <span>Create Account</span>
-          </Button>
-        </form>
-      </Form>
-      <FieldGroup>
-        <FieldSeparator>Or continue with</FieldSeparator>
-        <Field>
-          <Button
-            variant="outline"
-            type="button"
-            disabled={isLoading?.status}
-            onClick={handleSignInWithGoogle}
-          >
-            {isLoading?.event == "Google" ? <Spinner /> : <GoogleSvg />}
-            Sign up with Google
-          </Button>
-          <FieldDescription className="px-6 text-center">
-            Already have an account? <Link href="/auth/login">login</Link>
-          </FieldDescription>
-        </Field>
-      </FieldGroup>
-    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Input
+                        className="bg-background"
+                        id="password-toggle"
+                        placeholder="Enter your password"
+                        type={showPassword ? "text" : "password"}
+                        {...field}
+                      />
+                      <Button
+                        className="absolute top-0 right-0 h-full px-3 hover:bg-transparent"
+                        onClick={() => setShowPassword(!showPassword)}
+                        size="icon"
+                        type="button"
+                        variant="ghost"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-4 w-4 text-muted-foreground" />
+                        ) : (
+                          <Eye className="h-4 w-4 text-muted-foreground" />
+                        )}
+                      </Button>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              type="submit"
+              className="w-full text-white"
+              disabled={isLoading?.status}
+            >
+              {isLoading?.event == "Signup" && <Spinner />}
+              <span>Create Account</span>
+            </Button>
+          </form>
+        </Form>
+        <FieldGroup>
+          <FieldSeparator>Or continue with</FieldSeparator>
+          <Field>
+            <Button
+              variant="outline"
+              type="button"
+              disabled={isLoading?.status}
+              onClick={handleSignInWithGoogle}
+            >
+              {isLoading?.event == "Google" ? <Spinner /> : <GoogleSvg />}
+              Sign up with Google
+            </Button>
+            <FieldDescription className="px-6 text-center">
+              Already have an account? <Link href="/auth/login">login</Link>
+            </FieldDescription>
+          </Field>
+        </FieldGroup>
+      </div>
+      <MailDailog
+        title={"Check Your Email"}
+        description={`We${"’"}ve sent a link to your inbox to complete your registration.`}
+        open={open}
+        message="This link will expire in 1 hour. Please verify your account promptly. Our platform will never share your personal details with anyone, ensuring your privacy. "
+      />
+    </>
   );
 }
 
