@@ -1,4 +1,3 @@
-import { UserRole } from "@prisma/client";
 import { createAccessControl } from "better-auth/plugins/access";
 import { defaultStatements, adminAc } from "better-auth/plugins/admin/access";
 
@@ -10,10 +9,10 @@ const statements = {
 export const ac = createAccessControl(statements);
 
 export const roles = {
-  [UserRole.USER]: ac.newRole({
+  ["USER"]: ac.newRole({
     posts: ["read", "create", "update:own", "delete:own"],
-  }),   
-  [UserRole.ADMIN]: ac.newRole({
+  }),
+  ["ADMIN"]: ac.newRole({
     ...adminAc.statements,
     posts: ["create", "read", "update", "delete", "update:own", "delete:own"],
   }),

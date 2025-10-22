@@ -3,7 +3,7 @@ import { getSessionCookie } from "better-auth/cookies";
 
 const protectedRoutes = ["/dashboard", "/admin/dashboard"];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const sessionCookie = getSessionCookie(request);
   const isLoggedIn = Boolean(sessionCookie);
   const url = request.nextUrl.pathname;
