@@ -24,6 +24,7 @@ import Link from "next/link";
 import { useTheme } from "next-themes";
 import { Sidebar } from "./sidebar";
 import { Logo } from "@/components/utils/logo";
+import { useUser } from "@/store/user";
 
 interface NavbarLink {
   text: string;
@@ -57,9 +58,23 @@ export function Header({
   customNavigation,
   className,
 }: NavbarProps) {
+  const addUser = useUser((state) => state.addUser);
   const { data } = useSession();
   const { open, setOpen } = useSearch();
   const { theme } = useTheme();
+
+  useEffect(() => {
+    if (data?.user) {
+      const user = data.user;
+      addUser({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        image: user.image,
+        role: user.role,
+      });
+    }
+  }, [data?.user]);
 
   return (
     <header
@@ -113,7 +128,7 @@ export function Header({
               </SettingsProvider>
 
               {data?.user ? (
-                <UserDropdown user={data?.user} />
+                <UserDropdown />
               ) : (
                 <Link href="/auth/login">
                   <Avatar className="cursor-pointer">

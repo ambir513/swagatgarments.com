@@ -10,6 +10,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldSeparator,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -21,6 +27,7 @@ import toast from "react-hot-toast";
 import { forgotPassSchema } from "..";
 import { forgetPassword } from "@/lib/auth-client";
 import MailDailog from "./mail-dailog";
+import Link from "next/link";
 
 export function ForgotPassForm({
   className,
@@ -107,6 +114,14 @@ export function ForgotPassForm({
             </Button>
           </form>
         </Form>
+        <FieldGroup>
+          <FieldSeparator>Remembered your password?</FieldSeparator>
+          <Field>
+            <FieldDescription className=" text-center">
+              <Link href="/auth/login">Go back to login</Link>
+            </FieldDescription>
+          </Field>
+        </FieldGroup>
       </div>
       <MailDailog
         title={"Check Your Email"}
