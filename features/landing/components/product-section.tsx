@@ -66,7 +66,7 @@ export const products = [
   },
 ];
 
-export default function Home() {
+export function ProductSection() {
   return (
     <main className="min-h-screen bg-background">
       {/* Header Section */}

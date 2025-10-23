@@ -36,32 +36,32 @@ import { Spinner } from "@/components/ui/spinner";
 const list = [
   {
     title: "All Categories",
-    icons: <MdWindow />,
+    icons: MdWindow,
     href: "/",
   },
   {
     title: "Orders",
-    icons: <ScrollText />,
+    icons: ScrollText,
     href: "/",
   },
   {
     title: "My Cart",
-    icons: <BsCart />,
+    icons: BsCart,
     href: "/",
   },
   {
     title: "My Wishlist",
-    icons: <IoMdHeartEmpty />,
+    icons: IoMdHeartEmpty,
     href: "/",
   },
   {
     title: "Settings",
-    icons: <Settings />,
+    icons: Settings,
     href: "/",
   },
   {
     title: "Help",
-    icons: <HelpCircle />,
+    icons: HelpCircle,
     href: "/",
   },
 ];
@@ -128,7 +128,7 @@ export function Sidebar() {
 
         <div className="flex flex-col gap-y-2">
           {user?.role === "ADMIN" && (
-            <Link href={"/"}>
+            <Link href={"/dashboard"}>
               <Button
                 variant={"ghost"}
                 className="text-md ml-1 text-muted-foreground flex justify-start w-full items-center gap-x-2"
@@ -149,7 +149,7 @@ export function Sidebar() {
                 {item.title === "My Cart" ? (
                   <p className="flex justify-between items-center w-full">
                     <span className="flex justify-center items-center gap-x-2">
-                      <span>{item.icons}</span>
+                      <item.icons />
                       <span>{item.title}</span>
                     </span>
 
@@ -157,7 +157,7 @@ export function Sidebar() {
                   </p>
                 ) : (
                   <>
-                    <p>{item.icons}</p>
+                    <item.icons />
                     <span>{item.title}</span>
                   </>
                 )}

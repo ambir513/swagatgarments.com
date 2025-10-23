@@ -27,11 +27,13 @@ import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 const UserDropdown = () => {
   const Route = useRouter();
   const user = useUser((state) => state.user);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  console.log(user);
 
   const handleLogout = async () => {
     setIsLoading(true);
@@ -53,7 +55,7 @@ const UserDropdown = () => {
   };
 
   return (
-    <DropdownMenu>  
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button className="relative h-10 w-10 rounded-full" variant="ghost">
           <Avatar>
@@ -85,10 +87,12 @@ const UserDropdown = () => {
         </DropdownMenuItem>
 
         {user?.role === "ADMIN" && (
-          <DropdownMenuItem>
-            <ShieldUser />
-            Admin Panel
-          </DropdownMenuItem>
+          <Link href={"/dashboard"}>
+            <DropdownMenuItem>
+              <ShieldUser />
+              Admin Panel
+            </DropdownMenuItem>
+          </Link>
         )}
         <DropdownMenuItem>
           <ScrollText />
