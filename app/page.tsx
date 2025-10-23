@@ -1,6 +1,5 @@
-import { Bento } from "@/features/landing/components/bento";
-import { Feature } from "@/features/landing/components/feature";
-import FeatureProduct from "@/features/landing/components/FeatureProduct";
+import { CtaSection } from "@/features/landing/components/cta-section";
+import { ProductSection } from "@/features/landing/components/product-section";
 import { Footer } from "@/features/landing/components/footer";
 import { Header } from "@/features/landing/components/header";
 import { HeroSection } from "@/features/landing/components/hero-section";
@@ -14,8 +13,8 @@ export default function Home() {
         <HeroSection />
         <StatsSection />
       </div>
-      <FeatureProduct />
-      <Feature />
+      <ProductSection />
+      <CtaSection />
 
       <Footer />
     </>

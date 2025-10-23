@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Clock, Truck, Package, Headphones } from "lucide-react";
 
-export const Feature = () => {
+export const CtaSection = () => {
   const features = [
     {
       icon: Clock,
