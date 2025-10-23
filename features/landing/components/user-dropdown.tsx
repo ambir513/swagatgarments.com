@@ -1,5 +1,12 @@
 "use client";
-import { HelpCircle, LogOut, Settings, ShieldUser, User } from "lucide-react";
+import {
+  HelpCircle,
+  LogOut,
+  ScrollText,
+  Settings,
+  ShieldUser,
+  User,
+} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { BsCart } from "react-icons/bs";
@@ -18,7 +25,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
-import { fa } from "zod/v4/locales";
+import { IoMdHeartEmpty } from "react-icons/io";
+import { Badge } from "@/components/ui/badge";
 
 const UserDropdown = () => {
   const Route = useRouter();
@@ -45,7 +53,7 @@ const UserDropdown = () => {
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu>  
       <DropdownMenuTrigger asChild>
         <Button className="relative h-10 w-10 rounded-full" variant="ghost">
           <Avatar>
@@ -58,6 +66,7 @@ const UserDropdown = () => {
             />
             <AvatarFallback>SG</AvatarFallback>
           </Avatar>
+          <span className="absolute right-0 bottom-0 h-3 w-3 rounded-full bg-primary ring-2 ring-background" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
@@ -82,8 +91,21 @@ const UserDropdown = () => {
           </DropdownMenuItem>
         )}
         <DropdownMenuItem>
-          <BsCart />
+          <ScrollText />
           Order
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <div className="flex justify-between w-full">
+            <p className="flex justify-center items-center gap-x-2">
+              <BsCart />
+              <span> My Cart </span>
+            </p>
+            <Badge className="text-white ">1</Badge>
+          </div>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <IoMdHeartEmpty />
+          My Wishlist
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Settings />

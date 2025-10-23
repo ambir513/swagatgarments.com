@@ -16,9 +16,9 @@ export default function AuthLayout({
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex justify-center gap-2 md:justify-start">
           <a href="#" className="flex items-center gap-2 font-medium">
-            <div className="bg-primary text-primary-foreground flex rounded-full  items-center justify-center overflow-hidden">
-              <Logo theme="dark" />
-            </div>
+            <button className="cursor-pointer overflow-hidden rounded-xl border ">
+              <Logo theme={"dark"} />
+            </button>
             Swagat Garments.
           </a>
         </div>
