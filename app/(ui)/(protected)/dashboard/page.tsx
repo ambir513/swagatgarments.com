@@ -1,5 +1,7 @@
-const page = () => {
-  return <div className="">Dashboard</div>;
+import { Analytics } from "@/features/dashboard/analytics/components/analytics";
+
+const AnalyticsPage = () => {
+  return <Analytics />;
 };
 
-export default page;
+export default AnalyticsPage;
