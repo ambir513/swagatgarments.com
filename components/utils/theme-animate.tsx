@@ -72,7 +72,7 @@ export const ThemeAnimate = ({
               clip-path: circle(0% at ${cx}% ${cy}%);
             }
             to {
-              clip-path: circle(150% at ${cx}% ${cy}%);
+              clip-path: circle(200% at ${cx}% ${cy}%);
             }
           }
         }
@@ -95,7 +95,7 @@ export const ThemeAnimate = ({
           @keyframes circle-blur-expand {
             from {
               clip-path: circle(0% at ${cx}% ${cy}%);
-              filter: blur(4px);
+              filter: blur(20px);
             }
             to {
               clip-path: circle(150% at ${cx}% ${cy}%);

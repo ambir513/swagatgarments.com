@@ -5,7 +5,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { SearchIcon } from "lucide-react";
+import { Home, SearchIcon } from "lucide-react";
 import { ReactNode, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Kbd } from "@/components/ui/kbd";
@@ -20,13 +20,20 @@ import { SettingsProvider } from "@/components/contexts/settingsContext";
 import { SearchDialog } from "@/components/utils/search-dialog";
 import { useSearch } from "@/components/hooks/use-search";
 import { useSession } from "@/lib/auth-client";
-import Link from "next/link";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { useTheme } from "next-themes";
-import { Sidebar } from "../../landing/components/sidebar";
-import { Logo } from "@/components/utils/logo";
 import UserDropdown from "@/features/landing/components/user-dropdown";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useUser } from "@/store/user";
+import { usePathname } from "next/navigation";
+import { MobileSidebar } from "./mobile-sidebar";
 
 interface NavbarLink {
   text: string;
@@ -64,6 +71,9 @@ export function DashboardHeader({
   const { data } = useSession();
   const { open, setOpen } = useSearch();
   const { theme } = useTheme();
+  const pathname = usePathname();
+  const list = pathname.split("/").splice(1);
+  console.log(list);
 
   useEffect(() => {
     if (data?.user) {
@@ -86,10 +96,44 @@ export function DashboardHeader({
       )}
     >
       {" "}
-      <div className="relative lg:px-32 px-4">
+      <div className="relative lg:px-32 sm:px-4 px-0">
         <NavbarComponent className="flex items-center justify-between py-2">
           {/* Left Section */}
-          <NavbarLeft className="flex items-center gap-3">Home</NavbarLeft>
+          <NavbarLeft className="flex items-center gap-3">
+            <Breadcrumb className="w-fit rounded-lg border px-3 py-2">
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink href="/">
+                    <Home className="size-4" />
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                {list.length == 2 ? (
+                  <>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink href={`/${list[0]}`}>
+                        {list[0]}
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbLink href={`/dashboard/${list[1]}`}>
+                        {list[1]}
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                  </>
+                ) : (
+                  <>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink href={`/${list[0]}`}>
+                        {list[0]}
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                  </>
+                )}
+              </BreadcrumbList>
+            </Breadcrumb>
+          </NavbarLeft>
 
           {/* Right Section */}
           <NavbarRight className="flex items-center gap-3">
@@ -122,7 +166,7 @@ export function DashboardHeader({
               <SettingsProvider>
                 <ThemeToggle />
               </SettingsProvider>
-              <SidebarTrigger />
+              <MobileSidebar />
             </div>
           </NavbarRight>
         </NavbarComponent>
