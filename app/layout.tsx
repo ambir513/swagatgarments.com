@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 //@ts-ignore
 import "./globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { CheckInternetWrapper } from "@/components/utils/check-internet-wrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +36,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <CheckInternetWrapper>{children}</CheckInternetWrapper>
         </ThemeProvider>
       </body>
     </html>
