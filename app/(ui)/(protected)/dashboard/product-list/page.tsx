@@ -1,5 +1,7 @@
+import { ProductList } from "@/features/dashboard/product-list/components/product-list";
+
 const page = () => {
-  return <div className="">Product List</div>;
+  return <ProductList />;
 };
 
 export default page;

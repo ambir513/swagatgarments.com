@@ -5,7 +5,7 @@ import React from "react";
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <SidebarProvider>
+    <SidebarProvider className="w-full">
       <AppSidebar />
       <main className="w-full">
         <DashboardHeader />
