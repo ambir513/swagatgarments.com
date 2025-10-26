@@ -12,7 +12,6 @@ enum UserRole {
   ADMIN
 }
 
-
 model User {
   id        String   @id @default(uuid())
   createdAt DateTime
@@ -81,4 +80,51 @@ model Verification {
   expiresAt  DateTime
 
   @@map("verifications")
+}
+
+enum ProductCategories {
+  MAN
+  WOMAN
+  KIDS
+}
+
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+  OUTOFSTOCK
+  CLOSEDOFSALE
+}
+
+model Product {
+  id            String            @id @default(cuid())
+  name          String
+  description   String
+  code          String
+  bandName      String            @map("band_name")
+  amount        Int
+  stock         Int
+  categories    ProductCategories
+  subCategories String            @map("sub_categories")
+  status        ProductStatus
+  variants      Variants[]
+  images        ProductImages?
+}
+
+model ProductImages {
+  id        String  @id @default(cuid())
+  image1    String
+  image2    String
+  image3    String
+  image4    String
+  productId String  @unique
+  Product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Variants {
+  id        String  @id @default(cuid())
+  color     String
+  price     Int
+  size      String
+  productId String
+  Product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }

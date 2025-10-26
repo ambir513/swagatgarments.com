@@ -1,5 +1,7 @@
+import { ProductDetail } from "@/features/dashboard/product-detail/components/product-detail";
+
 const page = () => {
-  return <div className="">Product List</div>;
+  return <ProductDetail />;
 };
 
 export default page;
