@@ -33,7 +33,6 @@ const UserDropdown = () => {
   const Route = useRouter();
   const user = useUser((state) => state.user);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  console.log(user);
 
   const handleLogout = async () => {
     setIsLoading(true);

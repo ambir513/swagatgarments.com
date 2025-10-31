@@ -98,7 +98,7 @@ export const ThemeAnimate = ({
               filter: blur(20px);
             }
             to {
-              clip-path: circle(150% at ${cx}% ${cy}%);
+              clip-path: circle(140% at ${cx}% ${cy}%);
               filter: blur(0);
             }
           }

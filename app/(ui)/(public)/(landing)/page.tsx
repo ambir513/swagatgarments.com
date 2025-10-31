@@ -8,15 +8,12 @@ import { StatsSection } from "@/features/landing/components/stats-section";
 export default function Home() {
   return (
     <>
-      <Header />
       <div className="flex flex-col mx-auto">
         <HeroSection />
         <StatsSection />
       </div>
       <ProductSection />
       <CtaSection />
-
-      <Footer />
     </>
   );
 }
