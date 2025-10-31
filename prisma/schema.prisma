@@ -12,6 +12,19 @@ enum UserRole {
   ADMIN
 }
 
+enum ProductCategories {
+  MAN
+  WOMAN
+  KIDS
+}
+
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+  OUTOFSTOCK
+  CLOSEDOFSALE
+}
+
 model User {
   id        String   @id @default(uuid())
   createdAt DateTime
@@ -26,8 +39,17 @@ model User {
   banReason     String?
   banExpires    DateTime?
 
-  sessions Session[]
-  accounts Account[]
+  sessions           Session[]
+  accounts           Account[]
+  userAddress        UserAddress[]
+  productReviewsId   String
+  add_to_cartId      String
+  add_to_favouriteId String
+  orderId            String
+  productReviews     ProductReviews   @relation(fields: [productReviewsId], references: [id], onDelete: Cascade)
+  add_to_card        Add_to_cart      @relation(fields: [add_to_cartId], references: [id], onDelete: Cascade)
+  add_to_favourite   Add_to_favourite @relation(fields: [add_to_favouriteId], references: [id], onDelete: Cascade)
+  order              Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@map("users")
 }
@@ -82,49 +104,175 @@ model Verification {
   @@map("verifications")
 }
 
-enum ProductCategories {
-  MAN
-  WOMAN
-  KIDS
+model Address {
+  id          String        @id @default(uuid())
+  addressNo1  String        @map("address_no_1")
+  addressNo2  String        @map("address_no_2")
+  landMark    String        @map("land_mark")
+  pinCode     String        @map("pin_code")
+  city        String
+  state       String
+  phoneNo     Int           @map("phone_no")
+  userAddress UserAddress[]
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
-enum ProductStatus {
-  ACTIVE
-  INACTIVE
-  OUTOFSTOCK
-  CLOSEDOFSALE
+model UserAddress {
+  userId    String
+  addressId String
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  address Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
+
+  @@id([userId, addressId])
 }
 
 model Product {
-  id            String            @id @default(cuid())
-  name          String
-  description   String
-  code          String
-  bandName      String            @map("band_name")
-  amount        Int
-  stock         Int
-  categories    ProductCategories
-  subCategories String            @map("sub_categories")
-  status        ProductStatus
-  variants      Variants[]
-  images        ProductImages?
+  id                 String            @id @default(cuid())
+  name               String
+  description        String
+  code               String
+  brandName          String            @map("brand_name")
+  amount             Int
+  categories         ProductCategories
+  subCategories      String            @map("sub_categories")
+  status             ProductStatus     @default(ACTIVE)
+  stock              Int
+  productVariants    ProductVariants[]
+  productReviews     ProductReviews[]
+  add_to_cartId      String
+  add_to_favouriteId String
+  orderId            String
+  add_to_favourite   Add_to_favourite  @relation(fields: [add_to_favouriteId], references: [id], onDelete: Cascade)
+  add_to_card        Add_to_cart       @relation(fields: [add_to_cartId], references: [id], onDelete: Cascade)
+  order              Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  published          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+}
+
+model ProductVariants {
+  id             String           @id @default(cuid())
+  stock          Int
+  status         ProductStatus    @default(ACTIVE)
+  color          String
+  price          Int
+  size           String
+  productId      String
+  variantsImages VariantsImages[]
+  createAt       DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  Product        Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model ProductImages {
-  id        String  @id @default(cuid())
-  image1    String
-  image2    String
-  image3    String
-  image4    String
-  productId String  @unique
-  Product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id             String           @id @default(cuid())
+  image          String
+  variantsImages VariantsImages[]
+  createAt       DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
 }
 
-model Variants {
+model VariantsImages {
+  variantId String
+  imagesId  String
+
+  productVariants ProductVariants @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  productImages   ProductImages   @relation(fields: [imagesId], references: [id], onDelete: Cascade)
+
+  @@id([variantId, imagesId])
+}
+
+model ProductReviews {
   id        String  @id @default(cuid())
-  color     String
-  price     Int
-  size      String
+  star      Int
+  comment   String
+  userId    User[]
   productId String
-  Product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Add_to_cart {
+  id        String    @id @default(cuid())
+  productId Product[]
+  userId    User[]
+}
+
+model Add_to_favourite {
+  id        String    @id @default(cuid())
+  productId Product[]
+  userId    User[]
+}
+
+model Order {
+  id              String    @id @default(cuid())
+  orderId         String
+  amount          Int
+  productId       Product[]
+  userId          User[]
+  shippingAddress Address[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+enum EmployeesPaymentsStatus {
+  PAID
+  PENDING
+}
+
+enum EmployeesPresentlyStatus {
+  A
+  P
+}
+
+model Employees {
+  id                String              @id @default(cuid())
+  name              String
+  email             String
+  phoneNo           Int                 @map("phone_no")
+  role              String
+  employeePresently employeePresently[]
+  employeePayments  EmployeePayments[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+}
+
+model EmployeesPayments {
+  id               String                  @id @default(cuid())
+  month            String
+  salary           Int
+  status           EmployeesPaymentsStatus
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+  employeePayments EmployeePayments[]
+}
+
+model EmployeesPresently {
+  id                String                   @id @default(cuid())
+  Date              DateTime
+  status            EmployeesPresentlyStatus
+  createdAt         DateTime                 @default(now())
+  updatedAt         DateTime                 @updatedAt
+  employeePresently employeePresently[]
+}
+
+model EmployeePayments {
+  employeeId String
+  paymentId  String
+
+  employees         Employees         @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  employeesPayments EmployeesPayments @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@id([employeeId, paymentId])
+}
+
+model employeePresently {
+  employeeId String
+  presently  String
+
+  employees          Employees          @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  employeesPresently EmployeesPresently @relation(fields: [presently], references: [id], onDelete: Cascade)
+
+  @@id([employeeId, presently])
 }

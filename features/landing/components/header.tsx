@@ -83,7 +83,6 @@ export function Header({
         className
       )}
     >
-      {" "}
       <div className="relative lg:px-32 px-4">
         <NavbarComponent className="flex items-center justify-between py-2">
           {/* Left Section */}
