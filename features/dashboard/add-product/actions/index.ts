@@ -1,40 +1,35 @@
 "use server";
 import { db } from "@/db";
+import { addProductDetails } from "../type";
 
-export const createProduct = async ({ products, images, variants }: data) => {
+export const createProduct = async (data: addProductDetails) => {
   try {
     const product = await db.product.create({
       data: {
-        name: products.name,
-        description: products.description,
-        amount: Number(products.amount),
-        bandName: products.band_name,
-        subCategories: products.sub_categories,
-        categories: products.categories,
-        status: products.status,
-        stock: Number(products.stock),
-        code: products.code,
+        name: data.name,
+        description: data.description,
+        amount: Number(data.amount),
+        categories: data.categories,
+        subCategories: data.subCategories,
+        brandName: data.brandName,
+        code: data.code,
+        stock: data.stock,
       },
     });
-    const productImages = await db.productImages.create({
+
+    const variants = await db.productVariants.createMany({
       data: {
         productId: product.id,
-        image1: images[0],
-        image2: images[1],
-        image3: images[2],
-        image4: images[3],
+        color: data.variants[0].color,
+        size: data.variants[0].size,
+        images: data.variants[0].images,
+        stock: data.variants[0].stock,
+        price: data.variants[0].price,
       },
     });
-    const productVariantsData = variants.map((v) => ({
-      productId: product.id,
-      color: v.color,
-      price: Number(v.price),
-      size: v.size,
-    }));
+    console.log(product);
+    console.log(variants);
 
-    const productVariants = await db.variants.createMany({
-      data: productVariantsData,
-    });
     return { message: "Product added Successfully", status: true };
   } catch (error: unknown) {
     console.log(error);

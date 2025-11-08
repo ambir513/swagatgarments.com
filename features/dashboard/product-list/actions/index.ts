@@ -6,40 +6,14 @@ export const getProducts = async () => {
   try {
     const products = await db.product.findMany({
       include: {
-        images: {
-          select: {
-            image1: true,
-          },
-        },
-        variants: {
-          select: {
-            color: true,
-            size: true,
-            price: true,
-          },
-        },
+        variants: true,
       },
     });
-
-    const formatProduct = products.map((p) => ({
-      id: p.id,
-      name: p.name,
-      description: p.description,
-      code: p.code,
-      bandName: p.bandName,
-      subCategories: p.subCategories,
-      categories: p.categories,
-      status: p.status,
-      stock: p.stock,
-      amount: p.amount,
-      images: p.images?.image1,
-      variants: p.variants,
-    }));
 
     return {
       status: true,
       message: "products get successfully",
-      products: formatProduct,
+      products,
     };
   } catch (error: unknown) {
     console.log(error);
@@ -50,5 +24,26 @@ export const getProducts = async () => {
         ? error
         : "something went wrong";
     return { message, status: false, products: [] };
+  }
+};
+
+export const deleteProduct = async (productId: string) => {
+  try {
+    await db.product.delete({
+      where: { id: productId },
+    });
+    return {
+      status: true,
+      message: "Product deleted successfully",
+    };
+  } catch (error: unknown) {
+    console.log(error);
+    const message =
+      error instanceof Error
+        ? error.message
+        : typeof error === "string"
+        ? error
+        : "something went wrong";
+    return { message, status: false };
   }
 };
