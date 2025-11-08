@@ -1,7 +1,8 @@
 export interface ProductVariant {
   color: string;
   price: number;
-  size: string;
+  size: string[];
+  images: string[];
 }
 
 export interface ProductData {
@@ -14,7 +15,6 @@ export interface ProductData {
   status: "ACTIVE" | "INACTIVE" | "OUTOFSTOCK" | "CLOSEDOFSALE";
   categories: "MAN" | "WOMAN" | "KIDS";
   subCategories: string;
-  images?: string;
   variants: ProductVariant[];
 }
 

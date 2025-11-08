@@ -27,37 +27,33 @@ enum ProductStatus {
 
 model User {
   id        String   @id @default(uuid())
-  createdAt DateTime
-  updatedAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   name          String
-  email         String    @unique
+  email         String   @unique
   emailVerified Boolean
   image         String?
-  role          UserRole  @default(USER)
-  banned        Boolean?
+  role          UserRole @default(USER)
+  banned        Boolean? @default(false)
   banReason     String?
   banExpires    DateTime?
 
-  sessions           Session[]
-  accounts           Account[]
-  userAddress        UserAddress[]
-  productReviewsId   String
-  add_to_cartId      String
-  add_to_favouriteId String
-  orderId            String
-  productReviews     ProductReviews   @relation(fields: [productReviewsId], references: [id], onDelete: Cascade)
-  add_to_card        Add_to_cart      @relation(fields: [add_to_cartId], references: [id], onDelete: Cascade)
-  add_to_favourite   Add_to_favourite @relation(fields: [add_to_favouriteId], references: [id], onDelete: Cascade)
-  order              Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  sessions      Session[]
+  accounts      Account[]
+  userAddress   UserAddress[]
+  productReviews ProductReviews[]
+  carts          Add_to_cart[]
+  favourites     Add_to_favourite[]
+  orders         Order[]
 
   @@map("users")
 }
 
 model Session {
   id        String   @id @default(uuid())
-  createdAt DateTime
-  updatedAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   expiresAt      DateTime
   token          String   @unique
@@ -66,30 +62,9 @@ model Session {
   impersonatedBy String?
 
   userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
-}
-
-model Account {
-  id        String   @id @default(uuid())
-  createdAt DateTime
-  updatedAt DateTime
-
-  accountId             String
-  providerId            String
-  accessToken           String?
-  refreshToken          String?
-  idToken               String?
-  accessTokenExpiresAt  DateTime?
-  refreshTokenExpiresAt DateTime?
-  scope                 String?
-  password              String?
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("accounts")
 }
 
 model Verification {
@@ -104,19 +79,116 @@ model Verification {
   @@map("verifications")
 }
 
+
+model Account {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+
+  userId String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("accounts")
+}
+
+model Product {
+  id            String           @id @default(cuid())
+  name          String
+  description   String
+  code          String
+  brandName     String           @map("brand_name")
+  amount        Int
+  categories    ProductCategories
+  subCategories String           @map("sub_categories")
+  status        ProductStatus    @default(ACTIVE)
+  stock         Int 
+  published     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  variants   ProductVariants[]
+  reviews    ProductReviews[]
+  cartItems  Add_to_cart[]
+  favourites Add_to_favourite[]
+  orders     Order[]
+}
+ 
+model ProductVariants {
+  id             String          @id @default(cuid())
+  stock          Int
+  status         ProductStatus   @default(ACTIVE)
+  color          String
+  price          Int
+  size           String[]
+  images         String[]
+  productId      String
+  Product        Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+
+
+model ProductReviews {
+  id        String   @id @default(cuid())
+  star      Int
+  comment   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Add_to_cart {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+}
+
+model Add_to_favourite {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderNo   String
+  amount    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Address {
   id          String        @id @default(uuid())
   addressNo1  String        @map("address_no_1")
-  addressNo2  String        @map("address_no_2")
-  landMark    String        @map("land_mark")
+  addressNo2  String?       @map("address_no_2")
+  landMark    String?       @map("land_mark")
   pinCode     String        @map("pin_code")
   city        String
   state       String
-  phoneNo     Int           @map("phone_no")
+  phoneNo     String        @map("phone_no")
   userAddress UserAddress[]
-
-  orderId String
-  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
 model UserAddress {
@@ -127,93 +199,6 @@ model UserAddress {
   address Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
 
   @@id([userId, addressId])
-}
-
-model Product {
-  id                 String            @id @default(cuid())
-  name               String
-  description        String
-  code               String
-  brandName          String            @map("brand_name")
-  amount             Int
-  categories         ProductCategories
-  subCategories      String            @map("sub_categories")
-  status             ProductStatus     @default(ACTIVE)
-  stock              Int
-  productVariants    ProductVariants[]
-  productReviews     ProductReviews[]
-  add_to_cartId      String
-  add_to_favouriteId String
-  orderId            String
-  add_to_favourite   Add_to_favourite  @relation(fields: [add_to_favouriteId], references: [id], onDelete: Cascade)
-  add_to_card        Add_to_cart       @relation(fields: [add_to_cartId], references: [id], onDelete: Cascade)
-  order              Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  published          DateTime          @default(now())
-  updatedAt          DateTime          @updatedAt
-}
-
-model ProductVariants {
-  id             String           @id @default(cuid())
-  stock          Int
-  status         ProductStatus    @default(ACTIVE)
-  color          String
-  price          Int
-  size           String
-  productId      String
-  variantsImages VariantsImages[]
-  createAt       DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  Product        Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
-}
-
-model ProductImages {
-  id             String           @id @default(cuid())
-  image          String
-  variantsImages VariantsImages[]
-  createAt       DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-}
-
-model VariantsImages {
-  variantId String
-  imagesId  String
-
-  productVariants ProductVariants @relation(fields: [variantId], references: [id], onDelete: Cascade)
-  productImages   ProductImages   @relation(fields: [imagesId], references: [id], onDelete: Cascade)
-
-  @@id([variantId, imagesId])
-}
-
-model ProductReviews {
-  id        String  @id @default(cuid())
-  star      Int
-  comment   String
-  userId    User[]
-  productId String
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-}
-
-model Add_to_cart {
-  id        String    @id @default(cuid())
-  productId Product[]
-  userId    User[]
-}
-
-model Add_to_favourite {
-  id        String    @id @default(cuid())
-  productId Product[]
-  userId    User[]
-}
-
-model Order {
-  id              String    @id @default(cuid())
-  orderId         String
-  amount          Int
-  productId       Product[]
-  userId          User[]
-  shippingAddress Address[]
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
 }
 
 enum EmployeesPaymentsStatus {
